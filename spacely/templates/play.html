@@ -1,0 +1,65 @@
+{% extends "decorators/base.html" %}
+{% load staticfiles %}
+{% load socketio_tags %}
+
+{% block heading %}
+	<title>Play Spacely</title>
+
+	<!-- Load our scripts -->
+	<script src="{% static "js/crafty.js" %}"></script>
+  	<script src="{% static "js/spacely.js" %}"></script>
+
+  	<!-- Page is loaded, lets start it off!-->
+  	{% socketio %}
+  	<script>
+  		var socket, player, target_x, target_y;
+  		var threshold = 5;
+
+		function Event(type, value) {
+			this.type = type,
+			this.value = value
+		}
+
+  		$(document).ready(function() {
+  			socket = new io.Socket();
+	        socket.connect();
+
+	        socket.on('connect', function() {
+	            socket.subscribe('zone-2');
+	            console.log('subscribed');
+	            //socket.send('test','zone-2');
+
+	            });
+
+	        socket.on('message', function(data) {
+	            console.log(data);
+	            event_json = $.parseJSON(data);
+	            if (event_json['type'] == 'UPDATE') {
+	            	console.log('Update entered');
+	            	console.log(event_json['value']['x']);
+	            	player.x = event_json['value']['x'];
+	            	player.y = event_json['value']['y'];
+
+	            	//Send antoher message to keep moving
+	            	if (Math.abs(player.x -target_x) > threshold && Math.abs(player.y - target_y) > threshold) {
+	            		socket.send(new Event('MOVE', {'current_x':player.x, 'x':target_x, 'current_y':player.y, 'y':target_y}), 'zone-2');
+	            	}
+
+	            }
+
+	        });
+
+  			Game.start();
+
+		});
+  	</script>
+{% endblock %}
+
+{% block content %}
+	<center>
+		<div id="cr-stage"></div>
+	</center>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

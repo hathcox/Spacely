@@ -1,0 +1,36 @@
+{% extends "decorators/base.html" %}
+{% load staticfiles %}
+{% load socketio_tags %}
+
+
+{% block heading %}
+	<title>Dummy</title>
+{% endblock %}
+
+{% block content %}
+	{% if user.is_authenticated %}
+	    <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+	{% else %}
+	    <p>Welcome, new user. Please log in.</p>
+	{% endif %}
+	
+        {% socketio %}
+        <script>
+        var socket = new io.Socket();
+        socket.connect();
+
+        socket.on('connect', function() {
+            socket.subscribe('zone-2');
+            console.log('subscribed');
+            socket.send('test','zone-2');
+
+            });
+
+        socket.on('message', function(data) {
+            console.log('got it');
+            });
+        </script>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

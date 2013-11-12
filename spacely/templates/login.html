@@ -1,0 +1,122 @@
+{% extends "decorators/base.html" %}
+{% load staticfiles %}
+
+{% block heading %}
+    <title>Spacely - Login</title>
+    <style type="text/css">
+
+        .form-signin {
+            max-width: 300px;
+            padding: 19px 29px 29px;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            border: 1px solid #e5e5e5;
+            -webkit-border-radius: 5px;
+               -moz-border-radius: 5px;
+                    border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+               -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        }
+
+        .form-signin-normal{
+            max-width: 300px;
+            padding: 19px 29px 29px;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            border: 1px solid #e5e5e5;
+            -webkit-border-radius: 5px;
+               -moz-border-radius: 5px;
+                    border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+               -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+
+        }
+
+        .form-signin input[type="text"],
+        .form-signin input[type="password"] {
+            font-size: 16px;
+            height: auto;
+            margin-bottom: 15px;
+            padding: 7px 9px;
+
+        }
+
+        body .zocial {
+            margin: 8px 4px;
+            font-size: 13px;
+            width: 220px;
+        }
+
+    </style>
+    <link href='{% static "css/zocial.css" %}' rel='stylesheet'>
+    <link href='http://fonts.googleapis.com/css?family=Pompiere' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% comment %} Success account message {% endcomment %}
+        {% for message in messages %}
+            {% if message.tags %}
+            <div class="alert alert-success">
+                <li class="{{ message.tags }}">
+                    {{ message }}
+                </li>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% comment %} Login error message{% endcomment %}
+        {% if login_error %}
+            <div class="alert alert-error">
+            Invalid username or password.
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="span4 offset1">
+              <form action="/login" method="post" class="form-signin-normal">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <h2 class="form-signin-heading">Sign In</h2>
+                {{ form.username.errors }}
+                <label for="id_username">Username:</label>
+                {{ form.username }}
+                {{ form.password.errors }}
+                <label for="id_password">Password:</label>
+                {{ form.password }}
+                <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+              </form>
+            </div>
+
+            <div class="span4 offset1">
+              <div class="form-signin">
+                <h2 class="form-signin-heading">Alternative Sign In</h2>
+                <a class="zocial twitter" rel="nofollow" href="{% url "socialauth_begin" "twitter" %}">
+                    Sign in with Twitter</a>
+                </br>
+                <a class="zocial google" rel="nofollow" href="{% url "socialauth_begin" "google" %}">
+                    Sign in with Google</a>
+                </br>
+                <a class="zocial facebook"rel="nofollow" href="{% url "socialauth_begin" "facebook" %}">
+                    Sign in with Facebook</a>
+                </br>
+              </div>
+            </div>
+        </div>
+
+        <hr>
+        <footer>
+            <p>&copy; Company 2013</p>
+        </footer>
+
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
